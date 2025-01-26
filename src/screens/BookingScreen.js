@@ -1,79 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text, FlatList, StyleSheet, Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { supabase } from '../services/supabaseClient';
+import { navigate } from '../services/navigationService';
+import { UserContext } from '../contexts/UserContext';
 
-export default function BookingScreen() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [ticketCount, setTicketCount] = useState('');
-  const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function BookingScreen({ route }) {
+  const { event } = route.params; // Assuming concertId is passed as a parameter
+  const [tickets, setTickets] = useState('1');
+  const {user} = useContext(UserContext);
 
-  useEffect(() => {
-    fetchReservations();
-  }, []);
+  const handleBooking = async () => {
+    if (!tickets) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+    console.log(event);
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([{ evenement_id: event.id, utilisateur_id: user.id, nombre_de_billets: parseInt(tickets, 10) }]);
 
-  const fetchReservations = async () => {
-    try {
-      const { data: user, error: userError } = await supabase.auth.getUser();
-      if (userError) {
-        console.error('Error fetching user:', userError.message);
-        Alert.alert('Error', 'User not authenticated');
-        setLoading(false);
-        return;
-      }
-
-      const userId = user?.id;
-      if (!userId) {
-        console.error('User ID is undefined');
-        Alert.alert('Error', 'User ID is undefined');
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('utilisateur_id', userId);
-
-      if (error) {
-        console.error('Error fetching reservations:', error.message);
-        Alert.alert('Error', 'Could not fetch reservations');
-      } else {
-        setReservations(data);
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      Alert.alert('Error', 'An unexpected error occurred');
-    } finally {
-      setLoading(false);
+    if (error) {
+      Alert.alert('Error', error.message);
+    } else {
+      Alert.alert('Success', 'Your booking has been confirmed');
+      navigate('Confirmation');
     }
   };
 
-  const handleBooking = () => {
-    // Handle booking logic
-  };
-
-  if (loading) return <Text>Loading reservations...</Text>;
-  if (reservations.length === 0) return <Text>No reservations available</Text>;
-
   return (
     <View style={styles.container}>
-      <FlatList
-        data={reservations}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.reservationItem}>
-            <Text style={styles.reservationText}>Event: {item.event_name}</Text>
-            <Text style={styles.reservationText}>Date: {item.date}</Text>
-            <Text style={styles.reservationText}>Tickets: {item.ticket_count}</Text>
-          </View>
-        )}
+      <Text style={styles.title}>Book Your Ticket</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Number of Tickets"
+        value={tickets}
+        onChangeText={setTickets}
+        keyboardType="numeric"
       />
-      <TextInput placeholder="Name" value={name} onChangeText={setName} />
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
-      <TextInput placeholder="Ticket Count" value={ticketCount} onChangeText={setTicketCount} keyboardType="numeric" />
-      <Button title="Book" onPress={handleBooking} />
+      <Button title="Validate" onPress={handleBooking} />
     </View>
   );
 }
@@ -81,14 +45,20 @@ export default function BookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
   },
-  reservationItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  reservationText: {
-    fontSize: 16,
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
   },
 }); 

@@ -4,13 +4,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './src/screens/HomeScreen';
-import BookingScreen from './src/screens/BookingScreen';
+import ListBookingScreen from './src/screens/ListBooksScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import EventDetailsScreen from './src/screens/EventDetailsScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import { UserProvider, UserContext } from './src/contexts/UserContext';
 import { navigationRef } from './src/services/navigationService';
+import ConfirmationScreen from './src/screens/ConfirmationScreen';
+import BookingScreen from './src/screens/BookingScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -38,7 +40,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Booking" component={BookingScreen} />
+      <Tab.Screen name="Booking" component={ListBookingScreen} />
       <Tab.Screen name="Profile" component={UserProfileScreen} />
     </Tab.Navigator>
   );
@@ -55,6 +57,9 @@ function AppNavigator() {
         <>
           <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
           <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+          <Stack.Screen name="Booking" component={BookingScreen}/>
+          <Stack.Screen name="ListBooks" component={ListBookingScreen}/>
+          <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
         </>
       ) : (
         <>

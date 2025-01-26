@@ -2,24 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button, Image, StyleSheet } from 'react-native';
 import { supabase } from '../services/supabaseClient';
 import { navigate } from '../services/navigationService';
+import { fetchEvents } from '../services/eventService';
 
 export default function HomeScreen() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
+    const loadEvents = async () => {
+      const fetchedEvents = await fetchEvents();
+      setEvents(fetchedEvents);
+      setLoading(false);
+    };
 
-  const fetchEvents = async () => {
-    const { data, error } = await supabase.from('events').select('*');
-    if (error) {
-      console.error(error);
-    } else {
-      setEvents(data);
-    }
-    setLoading(false);
-  };
+    loadEvents();
+  }, []);
 
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);

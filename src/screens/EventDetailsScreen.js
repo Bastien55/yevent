@@ -31,7 +31,9 @@ export default function EventDetailsScreen({ route, navigation }) {
       </Text>
       <Button
         title="Book Tickets"
-        onPress={() => navigate('Booking', { event })}
+        onPress={() => {
+          navigate('Booking', { event: event })
+         } }
       />
     </View>
   );
