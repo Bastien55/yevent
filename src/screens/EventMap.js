@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import { fetchEvents } from '../services/eventService';
+import { navigate } from '../services/navigationService';
 
-export default function EventMap({ events, onMarkerPress }) {
+export default function EventMap() {
   const [loading, setLoading] = useState(true);
   const [region, setRegion] = useState({
     latitude: 37.78825, // Default latitude
@@ -11,7 +13,21 @@ export default function EventMap({ events, onMarkerPress }) {
     longitudeDelta: 0.0421,
   });
 
+  const [events, setEvents] = useState([]);
+
+  const handleMarkerPress = (event) => {
+    navigate('EventDetails', { event });
+  };
+
+  const loadEvents = async () => {
+    const fetchedEvents = await fetchEvents(); // Fetch all events
+    setEvents(fetchedEvents);
+    setLoading(false);
+  };
+
   useEffect(() => {
+    loadEvents();
+
     if (events.length > 0) {
       const firstEvent = events[0];
       setRegion({
@@ -44,7 +60,7 @@ export default function EventMap({ events, onMarkerPress }) {
             }}
             title={event.title}
             description={`Date: ${event.date}`}
-            onPress={() => onMarkerPress(event)} // Call the handler on marker press
+            onPress={() => handleMarkerPress(event)} // Call the handler on marker press
           />
         ))}
       </MapView>

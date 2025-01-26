@@ -37,10 +37,6 @@ export default function HomeScreen() {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  const handleMarkerPress = (event) => {
-    navigate('EventDetails', { event });
-  };
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -56,7 +52,6 @@ export default function HomeScreen() {
           </View>
         )}
       />
-      <EventMap events={events} onMarkerPress={handleMarkerPress} />
     </View>
   );
 }

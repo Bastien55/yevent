@@ -13,6 +13,7 @@ import { UserProvider, UserContext } from './src/contexts/UserContext';
 import { navigationRef } from './src/services/navigationService';
 import ConfirmationScreen from './src/screens/ConfirmationScreen';
 import BookingScreen from './src/screens/BookingScreen';
+import EventMap from './src/screens/EventMap';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -24,13 +25,20 @@ function MainTabs() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Booking') {
-            iconName = focused ? 'calendar' : 'calendar-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
+          
+          switch(route.name){
+            case 'Home':
+              iconName = focused ? 'home' : 'home-outline';
+              break;
+            case 'Booking':
+              iconName = focused ? 'calendar' : 'calendar-outline';
+              break;
+            case 'Profile':
+              iconName = focused ? 'person' : 'person-outline';
+              break;
+            case 'Map':
+              iconName = focused ? 'map' : 'map-outline';
+              break;
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -40,6 +48,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Map" component={EventMap} />
       <Tab.Screen name="Booking" component={ListBookingScreen} />
       <Tab.Screen name="Profile" component={UserProfileScreen} />
     </Tab.Navigator>
