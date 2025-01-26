@@ -1,0 +1,202 @@
+:root {
+    --color-white: white;
+    --color-black: black;
+    --color-darkblue: #171766;
+    --color-green: #00B6AA;
+    --color-red: #F2583E;
+    --color-yellow: #F6EF97;
+    --color-grey: #716E90;
+    --shadow-light: 0px 8px 30px rgba(80, 85, 136, 0.06);
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.card {
+    width: 237px;
+    height: 255px;
+    position: absolute;
+    background: var(--color-white);
+    box-shadow: var(--shadow-light);
+    border-radius: 18px;
+}
+
+.content {
+    width: 203px;
+    height: 84px;
+    position: absolute;
+    top: 154px;
+    left: 16px;
+}
+
+.title {
+    color: var(--color-black);
+    font-size: 18px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+.address {
+    width: 182px;
+    height: 17px;
+    position: absolute;
+    top: 67px;
+    opacity: 0.5;
+}
+
+.address-text {
+    position: absolute;
+    left: 21px;
+    color: var(--color-grey);
+    font-size: 13px;
+    font-family: 'Airbnb Cereal App', sans-serif;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: flex-start;
+}
+
+.icon-part1 {
+    width: 12px;
+    height: 14.67px;
+    background: var(--color-grey);
+    border: 1.5px solid;
+}
+
+.icon-part2 {
+    width: 4px;
+    height: 4px;
+    background: var(--color-white);
+    border: 1.5px solid;
+}
+
+.image-container {
+    width: 218px;
+    height: 131px;
+    position: absolute;
+    top: 9px;
+    left: 9px;
+}
+
+.image-background,
+.image-overlay {
+    width: 218px;
+    height: 131px;
+    border-radius: 10px;
+}
+
+.image-background {
+    background: #FFCD6C;
+}
+
+.image-overlay {
+    background: #BDACAC;
+}
+
+.image-elements {
+    width: 228.81px;
+    height: 241px;
+    position: absolute;
+    left: -3.07px;
+    top: -26px;
+}
+
+.element-container {
+    position: relative;
+}
+
+.rectangle {
+    position: absolute;
+}
+
+.rectangle-green {
+    width: 30.04px;
+    height: 48.97px;
+    left: 102.48px;
+    top: 91.76px;
+    background: var(--color-green);
+}
+
+.rectangle-darkblue {
+    width: 103.53px;
+    height: 81.13px;
+    left: 65.41px;
+    top: 159.87px;
+    background: var(--color-darkblue);
+}
+
+.complex-shape {
+    position: absolute;
+    left: 102.48px;
+    top: 29.92px;
+}
+
+.sub-rectangle-darkblue {
+    width: 79.43px;
+    height: 81.49px;
+    top: 61.84px;
+    background: var(--color-darkblue);
+}
+
+.sub-rectangle-white {
+    width: 23.26px;
+    height: 31.94px;
+    top: 16.8px;
+    background: var(--color-white);
+}
+
+.circle-red {
+    width: 17.48px;
+    height: 16.73px;
+    top: 10.44px;
+    background: var(--color-red);
+    border-radius: 50%;
+}
+
+.shape-container {
+    position: absolute;
+    top: 0;
+    left: 28.53px;
+}
+
+.rotated-shape {
+    width: 41.53px;
+    height: 41.53px;
+    top: 47.43px;
+    transform: rotate(-80.65deg);
+    background: var(--color-red);
+}
+
+.small-circle {
+    width: 9.41px;
+    height: 9.41px;
+    top: 44.37px;
+    left: 22.85px;
+    background: var(--color-yellow);
+    transform: rotate(-80.75deg);
+}
+
+.inner-shape {
+    width: 37.43px;
+    height: 26.91px;
+    top: 10.53px;
+    left: 9.53px;
+    background: var(--color-green);
+}
+
+.small-rectangle {
+    width: 15.6px;
+    height: 15.6px;
+    top: 30.87px;
+    left: 34.61px;
+    background: var(--color-red);
+}

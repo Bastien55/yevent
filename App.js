@@ -1,20 +1,91 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import HomeScreen from './src/screens/HomeScreen';
+import ListBookingScreen from './src/screens/ListBooksScreen';
+import UserProfileScreen from './src/screens/UserProfileScreen';
+import EventDetailsScreen from './src/screens/EventDetailsScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
+import { UserProvider, UserContext } from './src/contexts/UserContext';
+import { navigationRef } from './src/services/navigationService';
+import ConfirmationScreen from './src/screens/ConfirmationScreen';
+import BookingScreen from './src/screens/BookingScreen';
+import EventMap from './src/screens/EventMap';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function MainTabs() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          
+          switch(route.name){
+            case 'Home':
+              iconName = focused ? 'home' : 'home-outline';
+              break;
+            case 'Booking':
+              iconName = focused ? 'calendar' : 'calendar-outline';
+              break;
+            case 'Profile':
+              iconName = focused ? 'person' : 'person-outline';
+              break;
+            case 'Map':
+              iconName = focused ? 'map' : 'map-outline';
+              break;
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Map" component={EventMap} />
+      <Tab.Screen name="Booking" component={ListBookingScreen} />
+      <Tab.Screen name="Profile" component={UserProfileScreen} />
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function AppNavigator() {
+  const { user, loading } = useContext(UserContext);
+
+  if (loading) return null; // Optionally, show a loading spinner
+
+  return (
+    <Stack.Navigator>
+      {user ? (
+        <>
+          <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+          <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+          <Stack.Screen name="Booking" component={BookingScreen}/>
+          <Stack.Screen name="ListBooks" component={ListBookingScreen}/>
+          <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <UserProvider>
+      <NavigationContainer ref={navigationRef}>
+        <AppNavigator />
+      </NavigationContainer>
+    </UserProvider>
+  );
+}
