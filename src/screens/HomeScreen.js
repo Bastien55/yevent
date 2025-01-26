@@ -1,22 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Button, Image, StyleSheet } from 'react-native';
-import { supabase } from '../services/supabaseClient';
-import { navigate } from '../services/navigationService';
+import React, { useEffect, useState, useContext } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Image } from 'react-native';
+import { UserContext } from '../contexts/UserContext';
 import { fetchEvents } from '../services/eventService';
+import EventMap from './EventMap';
+import { navigate } from '../services/navigationService';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function HomeScreen() {
+  const { user } = useContext(UserContext);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadEvents = async () => {
-      const fetchedEvents = await fetchEvents();
-      setEvents(fetchedEvents);
-      setLoading(false);
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadEvents = async () => {
+        const fetchedEvents = await fetchEvents(); // Fetch all events
+        setEvents(fetchedEvents);
+        setLoading(false);
+      };
 
-    loadEvents();
-  }, []);
+      loadEvents();
+    }, [])
+  );
 
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
@@ -28,27 +33,45 @@ export default function HomeScreen() {
     return `${day}/${month}/${year} \n ${hours}:${minutes}`;
   };
 
-  if (loading) return <Text>Loading...</Text>;
-  if (events.length === 0) return <Text>No events available</Text>;
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  const handleMarkerPress = (event) => {
+    navigate('EventDetails', { event });
+  };
 
   return (
-    <FlatList
-      data={events}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.eventContainer}>
-          <Image source={{ uri: item.image }} style={styles.eventImage} />
-          <Text style={styles.eventTitle}>{item.title}</Text>
-          <Text style={styles.eventDate}>{formatDateTime(item.date)}</Text>
-          <Button title="View Details" onPress={() => navigate('EventDetails', { event: item })} />
-        </View>
-      )}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={events}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.eventItem}>
+            <Image source={{ uri: item.image }} style={styles.eventImage} />
+            <Text style={styles.eventTitle}>{item.title}</Text>
+            <Text style={styles.eventDate}>{formatDateTime(item.date)}</Text>
+            <Text>{item.location}</Text>
+            <Button title="View Details" onPress={() => navigate('EventDetails', { event: item })} />
+          </View>
+        )}
+      />
+      <EventMap events={events} onMarkerPress={handleMarkerPress} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  eventContainer: {
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  eventImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+  },
+  eventItem: {
     margin: 20,
     padding: 10,
     backgroundColor: '#fff',
@@ -59,15 +82,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
-  eventImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 8,
-  },
   eventTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 5,
   },
   eventDate: {
     fontSize: 14,

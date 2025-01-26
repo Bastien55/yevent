@@ -2,23 +2,26 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { UserContext } from '../contexts/UserContext';
 import { fetchReservationsWithEvents } from '../services/reservationService';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 
 export default function ListBooksScreen() {
   const { user } = useContext(UserContext);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadReservations = async () => {
-      if (user) {
-        const fetchedReservations = await fetchReservationsWithEvents(user.id);
-        setReservations(fetchedReservations);
-      }
-      setLoading(false);
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadReservations = async () => {
+        if (user) {
+          const fetchedReservations = await fetchReservationsWithEvents(user.id);
+          setReservations(fetchedReservations);
+        }
+        setLoading(false);
+      };
 
-    loadReservations();
-  }, [user]);
+      loadReservations();
+    }, [user]) // Dependency array includes user to refetch if user changes
+  );
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
