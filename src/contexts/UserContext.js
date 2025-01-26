@@ -7,23 +7,23 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error('Error fetching user:', error.message);
-      } else {
-        setUser(data.user);
-        console.log(data.user);
-      }
-      setLoading(false);
-    };
+  const fetchUser = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error('Error fetching user:', error.message);
+    } else {
+      setUser(data.user);
+      console.log(data.user);
+    }
 
-    fetchUser();
+  };
+
+  useEffect(() => {
+    setLoading(false);
   }, []);
 
   const updateUser = (newUser) => {
-    setUser(newUser);
+    fetchUser(newUser);
   };
 
   return (

@@ -9,6 +9,7 @@ export default function UserProfileScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log(currentUser);
     if (currentUser) {
       fetchProfile();
     }
